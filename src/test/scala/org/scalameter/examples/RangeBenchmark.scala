@@ -23,9 +23,9 @@ object RangeBenchmark extends Bench.ForkedTime {
 
     measure method "parallel map" in {
       using(ranges) in { r =>
-        val tasks = (0 to cores).map { _ =>
+        val tasks = (0 until cores).map { _ =>
           new Callable[Unit] {
-            override def call() = (0 to r.last / cores).map(_ + 1)
+            override def call() = (0 until r.last / cores).map(_ + 1)
           }
         }
         import collection.JavaConverters._
