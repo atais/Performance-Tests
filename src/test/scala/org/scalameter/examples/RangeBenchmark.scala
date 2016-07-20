@@ -5,7 +5,7 @@ import java.util.concurrent.{Callable, Executors, TimeUnit}
 import org.scalameter.api._
 import collection.JavaConverters._
 
-object RangeBenchmark extends Bench.LocalTime {
+object RangeBenchmark extends Bench.ForkedTime {
   val sizes = Gen.range("size")(300000, 1500000, 300000)
 
   val ranges = for {
@@ -15,13 +15,13 @@ object RangeBenchmark extends Bench.LocalTime {
   val cores = Runtime.getRuntime.availableProcessors()
 
   performance of "Range" in {
-    measure method "map" in {
+    measure method "Range map" in {
       using(ranges) in { r =>
         r.map(_ + 1)
       }
     }
 
-    measure method "parallel map" in {
+    measure method "Range parallel map" in {
       using(ranges) in { r =>
         val pool = Executors.newFixedThreadPool(cores)
         val tasks = (0 until cores).map { t =>
