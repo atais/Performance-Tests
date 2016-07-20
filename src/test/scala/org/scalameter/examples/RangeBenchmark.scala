@@ -4,7 +4,7 @@ import java.util.concurrent.{Callable, Executors}
 
 import org.scalameter.api._
 
-object RangeBenchmark extends Bench.ForkedTime {
+object RangeBenchmark extends Bench.LocalTime {
   val sizes = Gen.range("size")(300000, 1500000, 300000)
 
   val ranges = for {
@@ -23,9 +23,9 @@ object RangeBenchmark extends Bench.ForkedTime {
 
     measure method "parallel map" in {
       using(ranges) in { r =>
-        val tasks = (0 until cores).map { _ =>
+        val tasks = (0 until cores).map { t =>
           new Callable[Unit] {
-            override def call() = (0 until r.last / cores).map(_ + 1)
+            override def call() = (0 + t until r.last by cores).map(_ + 1)
           }
         }
         import collection.JavaConverters._
