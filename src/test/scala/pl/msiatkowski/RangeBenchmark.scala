@@ -1,4 +1,4 @@
-package org.scalameter.examples
+package pl.msiatkowski
 
 import java.util.concurrent.{Callable, Executors, TimeUnit}
 

@@ -1,12 +1,13 @@
-package org.scalameter.examples
+package pl.msiatkowski
 
 import java.util
 import java.util.concurrent.{Callable, ConcurrentHashMap, Executors}
 
 import org.scalameter.api._
 
-import scala.collection.JavaConverters._
-
+/**
+  * Created by msiatkowski on 21.07.16.
+  */
 object MapBenchmark extends Bench.ForkedTime {
 
   override val reporter = ChartReporter[Double](ChartFactory.XYLine())
@@ -30,7 +31,7 @@ object MapBenchmark extends Bench.ForkedTime {
     val concurrentHashMapS: String = "ConcurrentHashMap"
     val differentHashMapS: String = "Different HashMaps"
     val sharedHashMapS: String = "Shared ConcurrentHashMap"
-    
+
     measure method "add" in {
       testSingle(hashMapS, i => singleMap.put(i, i))
       testSingle(concurrentHashMapS, i => concurrentMap.put(i, i))
@@ -70,6 +71,7 @@ object MapBenchmark extends Bench.ForkedTime {
           override def call() = (0 + t until r by cores).map(i => method(t, i))
         }
       }
+      import scala.collection.JavaConverters._
       pool.invokeAll(tasks.asJava)
       pool.shutdown()
     }

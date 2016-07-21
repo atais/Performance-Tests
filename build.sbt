@@ -1,14 +1,12 @@
-/** This is the simplest possible use of ScalaMeter.
-  * It allows running ScalaMeter benchmarks as part of the test suite.
-  * It means, that when the test command is run, ScalaMeter benchmarks are run along
-  * the tests from other test frameworks, such as ScalaTest or ScalaCheck.
+/**
+  * It is a simple project for testing performance of different Java/Scala aspects.
   */
 lazy val basic = Project(
   "basic",
   file("."),
   settings = Defaults.coreDefaultSettings ++ Seq(
-    name := "scalameter-examples",
-    organization := "com.storm-enroute",
+    name := "performance-tests",
+    organization := "pl.msiatkowski",
     scalaVersion := "2.11.1",
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint"),
     publishArtifact := false,

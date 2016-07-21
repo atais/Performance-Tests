@@ -4,8 +4,8 @@ Some performance tests using ScalaMeter
 
 # How to run?
 
-* from console `sbt test:test-only *YourTestClass`
-available tests:
+Run from console `sbt "test-only [testClass]"` <br>
+Available tests:
 
-* `src/test/scala/org/scalameter/examples/MapBenchmark.scala`
-* `src/test/scala/org/scalameter/examples/RangeBenchmark.scala`
+* `pl.msiatkowski.MapBenchmark`
+* `pl.msiatkowski.RangeBenchmark`
