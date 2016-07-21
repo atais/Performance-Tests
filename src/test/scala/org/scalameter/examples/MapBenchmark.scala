@@ -13,11 +13,12 @@ object MapBenchmark extends Bench.ForkedTime {
 
   val opts = Context(
     exec.benchRuns -> 500,
-    exec.jvmflags -> List("-Xms1G", "-Xmx12G", "-d64")
+    exec.jvmflags -> List("-Xms1G", "-Xmx8G", "-d64")
   )
 
-  val sizes = Gen.range("size")(1000000, 10000000, 3000000)
-  val cores = Runtime.getRuntime.availableProcessors()
+  implicit def sizes: Gen[Int] = Gen.range("size")(100000, 1000000, 300000)
+
+  implicit def cores: Int = Runtime.getRuntime.availableProcessors()
 
   performance of "Different Map implementations" config opts in {
     val singleMap = new util.HashMap[Int, Int]()
@@ -25,38 +26,43 @@ object MapBenchmark extends Bench.ForkedTime {
     val differentMaps = (0 until cores).map(_ => new util.HashMap[Int, Int]())
     val sharedMap = new ConcurrentHashMap[Int, Int]()
 
+    val hashMapS: String = "HashMap"
+    val concurrentHashMapS: String = "ConcurrentHashMap"
+    val differentHashMapS: String = "Different HashMaps"
+    val sharedHashMapS: String = "Shared ConcurrentHashMap"
+    
     measure method "add" in {
-      testSingle(sizes, "HashMap", i => singleMap.put(i, i))
-      testSingle(sizes, "ConcurrentHashMap", i => concurrentMap.put(i, i))
+      testSingle(hashMapS, i => singleMap.put(i, i))
+      testSingle(concurrentHashMapS, i => concurrentMap.put(i, i))
 
-      testConcurrent(sizes, "Different HashMaps", cores, (t, i) => differentMaps(t).put(i, i))
-      testConcurrent(sizes, "Shared ConcurrentHashMap", cores, (_, i) => sharedMap.put(i, i))
+      testConcurrent(differentHashMapS, (t, i) => differentMaps(t).put(i, i))
+      testConcurrent(sharedHashMapS, (_, i) => sharedMap.put(i, i))
     }
 
     measure method "get" in {
-      testSingle(sizes, "HashMap", i => singleMap.get(i))
-      testSingle(sizes, "ConcurrentHashMap", i => concurrentMap.get(i))
+      testSingle(hashMapS, i => singleMap.get(i))
+      testSingle(concurrentHashMapS, i => concurrentMap.get(i))
 
-      testConcurrent(sizes, "Different HashMaps", cores, (t, i) => differentMaps(t).get(i))
-      testConcurrent(sizes, "Shared ConcurrentHashMap", cores, (_, i) => sharedMap.get(i))
+      testConcurrent(differentHashMapS, (t, i) => differentMaps(t).get(i))
+      testConcurrent(sharedHashMapS, (_, i) => sharedMap.get(i))
     }
 
     measure method "remove" in {
-      testSingle(sizes, "HashMap", i => singleMap.remove(i))
-      testSingle(sizes, "ConcurrentHashMap", i => concurrentMap.remove(i))
+      testSingle(hashMapS, i => singleMap.remove(i))
+      testSingle(concurrentHashMapS, i => concurrentMap.remove(i))
 
-      testConcurrent(sizes, "Different HashMaps", cores, (t, i) => differentMaps(t).remove(i))
-      testConcurrent(sizes, "Shared ConcurrentHashMap", cores, (_, i) => sharedMap.remove(i))
+      testConcurrent(differentHashMapS, (t, i) => differentMaps(t).remove(i))
+      testConcurrent(sharedHashMapS, (_, i) => sharedMap.remove(i))
     }
   }
 
-  private def testSingle(gen: Gen[Int], title: String, method: Int => Int) = {
+  private def testSingle(title: String, method: Int => Int)(implicit gen: Gen[Int]) = {
     using(gen) curve title in { r =>
       (0 until r).map(i => method(i))
     }
   }
 
-  private def testConcurrent(gen: Gen[Int], title: String, cores: Int, method: (Int, Int) => Int) = {
+  private def testConcurrent(title: String, method: (Int, Int) => Int)(implicit gen: Gen[Int], cores: Int) = {
     using(gen) curve title in { r =>
       val pool = Executors.newFixedThreadPool(cores)
       val tasks = (0 until cores).map { t =>
