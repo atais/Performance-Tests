@@ -17,7 +17,9 @@ object MapBenchmark extends Bench.ForkedTime {
     exec.jvmflags -> List("-Xms1G", "-Xmx8G", "-d64")
   )
 
-  implicit def sizes: Gen[Int] = Gen.range("size")(100000, 1000000, 300000)
+  val size = 100000
+
+  implicit def sizes: Gen[Int] = Gen.range("size")(size, 10 * size, 3 * size)
 
   implicit def cores: Int = Runtime.getRuntime.availableProcessors()
 
@@ -59,7 +61,10 @@ object MapBenchmark extends Bench.ForkedTime {
 
   private def testSingle(title: String, method: Int => Int)(implicit gen: Gen[Int]) = {
     using(gen) curve title in { r =>
-      (0 until r).map(i => method(i))
+      (0 until r).map(i => {
+        val r = method(i)
+        r
+      })
     }
   }
 

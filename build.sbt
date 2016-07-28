@@ -11,7 +11,9 @@ lazy val basic = Project(
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint"),
     publishArtifact := false,
     libraryDependencies ++= Seq(
-      "com.storm-enroute" %% "scalameter" % "0.7" % "test"
+      "com.storm-enroute" %% "scalameter" % "0.7" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+      "org.apache.commons" % "commons-lang3" % "3.4"
     ),
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     //    parallelExecution in Test := false,
