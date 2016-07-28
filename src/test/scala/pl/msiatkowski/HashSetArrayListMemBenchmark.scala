@@ -2,12 +2,13 @@ package pl.msiatkowski
 
 import java.util
 
+import org.apache.commons.lang3.RandomStringUtils
 import org.scalameter.api._
 
 /**
   * Created by msiatkowski on 21.07.16.
   */
-object HashSetArrayListMemBenchmarkInt extends Bench.LocalTime {
+object HashSetArrayListMemBenchmark extends Bench.LocalTime {
 
   override def measurer = new Executor.Measurer.MemoryFootprint
 
@@ -25,15 +26,22 @@ object HashSetArrayListMemBenchmarkInt extends Bench.LocalTime {
   implicit def cores: Int = Runtime.getRuntime.availableProcessors()
 
   performance of "HashSet vs ArrayList" config opts in {
-    val list = new util.ArrayList[Int]()
-    val set = new util.HashSet[Int]()
 
     val listS: String = "ArrayList"
     val setS: String = "HashSet"
 
-    measure method "size" in {
+    measure method "Int" in {
+      val list = new util.ArrayList[Int]()
+      val set = new util.HashSet[Int]()
       testSingle(listS, i => list.add(i))
       testSingle(setS, i => set.add(i))
+    }
+
+    measure method "String" in {
+      val list = new util.ArrayList[String]()
+      val set = new util.HashSet[String]()
+      testSingle(listS, i => list.add(RandomStringUtils.randomAlphabetic(10)))
+      testSingle(setS, i => set.add(RandomStringUtils.randomAlphabetic(10)))
     }
   }
 
