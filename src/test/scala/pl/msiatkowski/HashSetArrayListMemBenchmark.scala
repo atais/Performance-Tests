@@ -8,22 +8,20 @@ import org.scalameter.api._
 /**
   * Created by msiatkowski on 21.07.16.
   */
-object HashSetArrayListMemBenchmark extends Bench.LocalTime {
+object HashSetArrayListMemBenchmark extends Bench.ForkedTime {
 
   override def measurer = new Executor.Measurer.MemoryFootprint
 
   override val reporter = ChartReporter[Double](ChartFactory.XYLine())
 
   val opts = Context(
-    exec.benchRuns -> 10,
+    exec.benchRuns -> 100,
     exec.jvmflags -> List("-Xms2g", "-Xmx8g")
   )
 
   val size = 10000
 
-  implicit def sizes: Gen[Int] = Gen.range("size")(size, 10 * size, 3 * size)
-
-  implicit def cores: Int = Runtime.getRuntime.availableProcessors()
+  def sizes: Gen[Int] = Gen.range("size")(size, 10 * size, 3 * size)
 
   performance of "HashSet vs ArrayList" config opts in {
 
@@ -31,24 +29,27 @@ object HashSetArrayListMemBenchmark extends Bench.LocalTime {
     val setS: String = "HashSet"
 
     measure method "Int" in {
-      val list = new util.ArrayList[Int]()
-      val set = new util.HashSet[Int]()
-      testSingle(listS, i => list.add(i))
-      testSingle(setS, i => set.add(i))
+      using(sizes) curve listS in { i =>
+        val c = new util.ArrayList[Int]()
+        (0 until i).map(t => c.add(t))
+      }
+
+      using(sizes) curve setS in { i =>
+        val c = new util.HashSet[Int]()
+        (0 until i).map(t => c.add(t))
+      }
     }
 
     measure method "String" in {
-      val list = new util.ArrayList[String]()
-      val set = new util.HashSet[String]()
-      testSingle(listS, i => list.add(RandomStringUtils.randomAlphabetic(10)))
-      testSingle(setS, i => set.add(RandomStringUtils.randomAlphabetic(10)))
+      using(sizes) curve listS in { i =>
+        val c = new util.ArrayList[String]()
+        (0 until i).map(_ => c.add(RandomStringUtils.randomAlphabetic(10)))
+      }
+
+      using(sizes) curve setS in { i =>
+        val c = new util.HashSet[String]()
+        (0 until i).map(_ => c.add(RandomStringUtils.randomAlphabetic(10)))
+      }
     }
   }
-
-  private def testSingle[T](title: String, method: Int => T)(implicit gen: Gen[Int]) = {
-    using(gen) curve title in { r =>
-      (0 until r).map(i => method(i))
-    }
-  }
-
 }
