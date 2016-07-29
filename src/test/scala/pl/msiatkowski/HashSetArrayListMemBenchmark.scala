@@ -42,16 +42,30 @@ object HashSetArrayListMemBenchmark extends Bench.ForkedTime {
       }
     }
 
-    measure method "String" in {
+    measure method "String 10 chars" in {
       using(sizes) curve listS in { i =>
         val c = new util.ArrayList[String]()
-        (0 until i).map(_ => c.add(RandomStringUtils.randomAlphabetic(10)))
+        (0 until i).map(_ => c.add(RandomStringUtils.random(10)))
         c
       }
 
       using(sizes) curve setS in { i =>
         val c = new util.HashSet[String]()
-        (0 until i).map(_ => c.add(RandomStringUtils.randomAlphabetic(10)))
+        (0 until i).map(_ => c.add(RandomStringUtils.random(10)))
+        c
+      }
+    }
+
+    measure method "String 50 chars" in {
+      using(sizes) curve listS in { i =>
+        val c = new util.ArrayList[String]()
+        (0 until i).map(_ => c.add(RandomStringUtils.random(50)))
+        c
+      }
+
+      using(sizes) curve setS in { i =>
+        val c = new util.HashSet[String]()
+        (0 until i).map(_ => c.add(RandomStringUtils.random(50)))
         c
       }
     }
