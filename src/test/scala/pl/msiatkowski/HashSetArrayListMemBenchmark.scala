@@ -32,11 +32,13 @@ object HashSetArrayListMemBenchmark extends Bench.ForkedTime {
       using(sizes) curve listS in { i =>
         val c = new util.ArrayList[Int]()
         (0 until i).map(t => c.add(t))
+        c
       }
 
       using(sizes) curve setS in { i =>
         val c = new util.HashSet[Int]()
         (0 until i).map(t => c.add(t))
+        c
       }
     }
 
@@ -44,11 +46,13 @@ object HashSetArrayListMemBenchmark extends Bench.ForkedTime {
       using(sizes) curve listS in { i =>
         val c = new util.ArrayList[String]()
         (0 until i).map(_ => c.add(RandomStringUtils.randomAlphabetic(10)))
+        c
       }
 
       using(sizes) curve setS in { i =>
         val c = new util.HashSet[String]()
         (0 until i).map(_ => c.add(RandomStringUtils.randomAlphabetic(10)))
+        c
       }
     }
   }
