@@ -5,6 +5,7 @@ import java.util
 import org.scalameter.Gen.Collections
 import org.scalameter.api._
 
+import org.scalameter.picklers.noPickler._
 
 /**
   * Created by msiatkowski on 21.07.16.
