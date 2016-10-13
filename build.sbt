@@ -7,13 +7,17 @@ lazy val basic = Project(
   settings = Defaults.coreDefaultSettings ++ Seq(
     name := "performance-tests",
     organization := "pl.msiatkowski",
-    scalaVersion := "2.11.1",
+    scalaVersion := "2.11.8",
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint"),
     publishArtifact := false,
     libraryDependencies ++= Seq(
       "com.storm-enroute" %% "scalameter" % "0.7" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+      "org.scalatest" %% "scalatest" % "3.0.0" % "test",
       "org.apache.commons" % "commons-lang3" % "3.4"
+    ),
+    resolvers ++= Seq(
+      "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+      "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases"
     ),
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     //    parallelExecution in Test := false,
