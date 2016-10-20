@@ -3,6 +3,7 @@ package pl.msiatkowski.so
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 import org.scalatest._
 
@@ -28,7 +29,7 @@ class LocalDateCompare extends FlatSpec with Matchers {
   }
 
   def getLocalDate(date: String): LocalDate = {
-    LocalDate.parse(date, DateTimeFormatter.ofPattern("dd MMM, yyyy"))
+    LocalDate.parse(date, DateTimeFormatter.ofPattern("dd MMM, yyyy", Locale.ENGLISH))
   }
 
   def isDateBetweenRange(from: String, till: String, date: String): Boolean = {
