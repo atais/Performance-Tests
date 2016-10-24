@@ -32,7 +32,7 @@ object MapGetBenchmarkLV extends Bench.ForkedTime {
   val sharedHashMapS: String = "Shared ConcurrentHashMap"
 
   performance of "Different Map implementations" config opts in {
-    measure method "add" in {
+    measure method "add - LV" in {
 
       using(Gen.crossProduct(sizes,
         Gen.single("")(new util.HashMap[Int, Int]()))
