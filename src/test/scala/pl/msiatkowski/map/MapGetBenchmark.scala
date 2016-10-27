@@ -11,61 +11,47 @@ object MapGetBenchmark extends MapBenchmark {
   performance of "Different Map implementations" config opts in {
 
     measure method "get" in {
-      benchmark(hashMapS, parallel = false)({
-        () => new util.HashMap[Int, Int]()
-      })({
-        (r, m, t) => {
-          if (m.isEmpty) (0 until r).map(i => m.put(i, i))
-          t ++= (0 until r).map(i => () => m.get(i))
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-      })
+      using(for {r <- sizes} yield {
+        val map = new util.HashMap[Int, Int]()
+        (0 until r).map(i => {
+          map.put(i, i)
+          () => map.get(i)
+        })
+      }) curve hashMapS in {
+        t => t.foreach(_())
+      }
 
-      benchmark(concurrentHashMapS, parallel = false)({
-        () => new ConcurrentHashMap[Int, Int]()
-      })({
-        (r, m, t) => {
-          if (m.isEmpty) (0 until r).map(i => m.put(i, i))
-          t ++= (0 until r).map(i => () => m.get(i))
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-      })
+      using(for {r <- sizes} yield {
+        val map = new ConcurrentHashMap[Int, Int]()
+        (0 until r).map(i => {
+          map.put(i, i)
+          () => map.get(i)
+        })
+      }) curve concurrentHashMapS in {
+        t => t.foreach(_())
+      }
 
-      benchmark(sharedHashMapS, parallel = true)({
-        () => new ConcurrentHashMap[Int, Int]()
-      })({
-        (r, m, t) => {
-          if (m.isEmpty) (0 until r).map(i => m.put(i, i))
-          t ++= (0 until r).map(i => () => m.get(i))
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-      })
+      using(for {r <- sizes} yield {
+        val map = new ConcurrentHashMap[Int, Int]()
+        (0 until r).map(i => {
+          map.put(i, i)
+          () => map.get(i)
+        }).par
+      }) curve sharedHashMapS in {
+        t => t.foreach(_())
+      }
 
-      benchmark(differentHashMapS, parallel = true)({
-        () => (0 until cores).map(_ => new util.HashMap[Int, Int]())
-      })({
-        (r, m, t) => {
-          if (m.exists(_.isEmpty)) {
-            (0 until cores).map { t =>
-              m(t).clear()
-              (0 + t until r by cores).map(i => m(t).put(i, i))
-            }
-          }
-
-          t ++= (0 until cores).flatMap { t =>
-            (0 + t until r by cores).map(i => () => m(t).get(i))
-          }
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-      })
+      using(for {r <- sizes} yield {
+        (0 until cores).flatMap { t =>
+          val map = new util.HashMap[Int, Int]()
+          (0 + t until r by cores).map(i => {
+            map.put(i, i)
+            () => map.get(i)
+          })
+        }.par
+      }) curve differentHashMapS in {
+        t => t.foreach(_())
+      }
     }
   }
 }
