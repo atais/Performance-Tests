@@ -1,36 +1,26 @@
 package pl.msiatkowski
 
-import java.util.concurrent.{Callable, Executors, TimeUnit}
-
 import org.scalameter.api._
-import collection.JavaConverters._
 
 object RangeBenchmark extends Bench.ForkedTime {
-  val sizes = Gen.range("size")(300000, 1500000, 300000)
 
-  val ranges = for {
-    size <- sizes
-  } yield 0 until size
+  override val reporter = ChartReporter[Double](ChartFactory.XYLine())
+
+  val size = 100000
+  val sizes = Gen.range("size")(size, 10 * size, size)
 
   val cores = Runtime.getRuntime.availableProcessors()
 
   performance of "Range" in {
-    measure method "Range map" in {
-      using(ranges) in { r =>
-        r.map(_ + 1)
+    measure method "map" in {
+      using(sizes) curve "1 thread" in { r =>
+        (0 until r).map(_ + 1)
       }
-    }
 
-    measure method "Range parallel map" in {
-      using(ranges) in { r =>
-        val pool = Executors.newFixedThreadPool(cores)
-        val tasks = (0 until cores).map { t =>
-          new Callable[Unit] {
-            override def call() = (0 + t until r.last by cores).map(_ + 1)
-          }
+      using(sizes) curve cores + " threads" in { r =>
+        (0 until cores).par.map { t =>
+          (0 + t until r by cores).map(_ + 1)
         }
-        pool.invokeAll(tasks.asJava, 1, TimeUnit.MINUTES)
-        pool.shutdown()
       }
     }
   }
