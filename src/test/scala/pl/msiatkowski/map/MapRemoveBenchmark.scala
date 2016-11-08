@@ -11,62 +11,50 @@ object MapRemoveBenchmark extends MapBenchmark {
   performance of "Different Map implementations" config opts in {
 
     measure method "remove" in {
-      benchmark(hashMapS, parallel = false)({
-        () => new util.HashMap[Int, Int]()
-      })({
-        (r, m, t) => {
-          assert(m.isEmpty, "HashMap was not empty")
-          (0 until r).map(i => m.put(i, i))
-          t ++= (0 until r).map(i => () => m.remove(i))
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-      })
+      using(for {r <- sizes} yield {
+        val m = new util.HashMap[Int, Int]()
+        val f = (0 until r).map(i => () => m.remove(i))
+        (r, m, f)
+      }) curve hashMapS setUp {
+        case (r, m, _) => (0 until r).foreach(i => m.put(i, i))
+      } in {
+        case (_, _, f) => f.map(_ ())
+      }
 
-      benchmark(concurrentHashMapS, parallel = false)({
-        () => new ConcurrentHashMap[Int, Int]()
-      })({
-        (r, m, t) => {
-          assert(m.isEmpty, "ConcurrentHashMap was not empty")
-          (0 until r).map(i => m.put(i, i))
-          t ++= (0 until r).map(i => () => m.remove(i))
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-      })
+      using(for {r <- sizes} yield {
+        val m = new ConcurrentHashMap[Int, Int]()
+        val f = (0 until r).map(i => () => m.remove(i))
+        (r, m, f)
+      }) curve concurrentHashMapS setUp {
+        case (r, m, _) => (0 until r).foreach(i => m.put(i, i))
+      } in {
+        case (_, _, f) => f.map(_ ())
+      }
 
-      benchmark(sharedHashMapS, parallel = true)({
-        () => new ConcurrentHashMap[Int, Int]()
-      })({
-        (r, m, t) => {
-          assert(m.isEmpty, "Parallel ConcurrentHashMap was not empty")
-          (0 until r).map(i => m.put(i, i))
-          t ++= (0 until r).map(i => () => m.remove(i))
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-      })
+      using(for {r <- sizes} yield {
+        val m = new ConcurrentHashMap[Int, Int]()
+        val f = (0 until r).map(i => () => m.remove(i)).par
+        (r, m, f)
+      }) curve sharedHashMapS setUp {
+        case (r, m, _) => (0 until r).foreach(i => m.put(i, i))
+      } in {
+        case (_, _, f) => f.map(_ ())
+      }
 
-      benchmark(differentHashMapS, parallel = true)({
-        () => (0 until cores).map(_ => new util.HashMap[Int, Int]())
-      })({
-        (r, m, t) => {
-          (0 until cores).map { t =>
-            (0 + t until r by cores).map(i => m(t).put(i, i))
-          }
-
-          t ++= (0 until cores).flatMap { t =>
-            (0 + t until r by cores).map(i => () => m(t).remove(i))
-          }
-        }
-      })({
-        (r, m, t) =>
-          t.clear()
-          m.foreach(_.clear())
-      })
+      using(for {r <- sizes} yield {
+        val t = (0 until cores).map(t => {
+          val m = new util.HashMap[Int, Int]()
+          val f = (0 + t until r by cores).map(i => () => m.remove(i))
+          (m, f)
+        })
+        (r, t.map(_._1), t.map(_._2).par)
+      }) curve differentHashMapS setUp {
+        case (r, m, _) =>
+          (0 until cores).foreach(t =>
+            (0 + t until r by cores).map(i => () => m(t).put(i, i)))
+      } in {
+        case (_, _, f) => f.map(_.map(_ ()))
+      }
     }
   }
 }

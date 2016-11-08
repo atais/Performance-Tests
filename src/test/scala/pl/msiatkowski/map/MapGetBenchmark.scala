@@ -18,7 +18,7 @@ object MapGetBenchmark extends MapBenchmark {
           () => map.get(i)
         })
       }) curve hashMapS in {
-        t => t.foreach(_())
+        t => t.map(_ ())
       }
 
       using(for {r <- sizes} yield {
@@ -28,7 +28,7 @@ object MapGetBenchmark extends MapBenchmark {
           () => map.get(i)
         })
       }) curve concurrentHashMapS in {
-        t => t.foreach(_())
+        t => t.map(_ ())
       }
 
       using(for {r <- sizes} yield {
@@ -38,19 +38,19 @@ object MapGetBenchmark extends MapBenchmark {
           () => map.get(i)
         }).par
       }) curve sharedHashMapS in {
-        t => t.foreach(_())
+        t => t.map(_ ())
       }
 
       using(for {r <- sizes} yield {
-        (0 until cores).flatMap { t =>
-          val map = new util.HashMap[Int, Int]()
+        (0 until cores).map { t =>
+          val m = new util.HashMap[Int, Int]()
           (0 + t until r by cores).map(i => {
-            map.put(i, i)
-            () => map.get(i)
+            m.put(i, i)
+            () => m.get(i)
           })
         }.par
       }) curve differentHashMapS in {
-        t => t.foreach(_())
+        t => t.map(_.map(_ ()))
       }
     }
   }
