@@ -13,7 +13,7 @@ lazy val basic = Project(
     libraryDependencies ++= Seq(
       "com.storm-enroute" %% "scalameter" % "0.7" % "test",
       "org.scalatest" %% "scalatest" % "3.0.0" % "test",
-      "org.apache.commons" % "commons-lang3" % "3.4"
+      "org.apache.commons" % "commons-lang3" % "3.5"
     ),
     resolvers ++= Seq(
       "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
