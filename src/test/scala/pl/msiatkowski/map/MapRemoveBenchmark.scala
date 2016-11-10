@@ -15,9 +15,9 @@ object MapRemoveBenchmark extends MapBenchmark {
     measure method "remove" in {
 
       def bench[T](r: Int, m: util.AbstractMap[T, T], f: GenSeq[() => T]) = {
-        assert(m.size == r, s"""${m.size} start map size is not equal $r"""")
+        //        assert(m.size == r, s"""${m.size} start map size is not equal $r"""")
         val res = f.map(_ ())
-        assert(m.isEmpty, s"""${m.size} end map size is not equal 0"""")
+        //        assert(m.isEmpty, s"""${m.size} end map size is not equal 0"""")
         res
       }
 
@@ -64,9 +64,9 @@ object MapRemoveBenchmark extends MapBenchmark {
             (0 + t until r by cores).foreach(i => m(t).put(i, i)))
       } in {
         case (r, m, f) =>
-          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} is not equal $r"""")
+          //          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} is not equal $r"""")
           val res = f.map(_.map(_ ()))
-          assert(m.map(_.size).sum == 0, s"""${m.map(_.size).sum} is not equal 0"""")
+          //          assert(m.map(_.size).sum == 0, s"""${m.map(_.size).sum} is not equal 0"""")
           res
       }
     }

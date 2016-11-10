@@ -15,9 +15,9 @@ object MapGetBenchmark extends MapBenchmark {
     measure method "get" in {
 
       def bench[T](r: Int, m: util.AbstractMap[T, T], f: GenSeq[() => T]) = {
-        assert(m.size == r, s"""${m.size} map size is not equal $r"""")
+        //        assert(m.size == r, s"""${m.size} map size is not equal $r"""")
         val res = f.map(_ ())
-        assert(res.size == r, s"""${res.size} result size is not equal $r"""")
+        //        assert(res.size == r, s"""${res.size} result size is not equal $r"""")
         res
       }
 
@@ -66,9 +66,9 @@ object MapGetBenchmark extends MapBenchmark {
         (r, t.map(_._1), t.map(_._2).par)
       }) curve differentHashMapS in {
         case (r, m, t) =>
-          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} map size is not equal $r"""")
+          //          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} map size is not equal $r"""")
           val res = t.flatMap(_.map(_ ()))
-          assert(res.size == r, s"""${res.size} result size is not equal $r"""")
+          //          assert(res.size == r, s"""${res.size} result size is not equal $r"""")
           res
       }
     }

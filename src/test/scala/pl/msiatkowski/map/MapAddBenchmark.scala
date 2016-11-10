@@ -15,9 +15,9 @@ object MapAddBenchmark extends MapBenchmark {
     measure method "add" in {
 
       def bench[T](r: Int, m: util.AbstractMap[T, T], f: GenSeq[() => T]) = {
-        assert(m.size == 0, s"""${m.size} map size is not equal 0"""")
+        //        assert(m.size == 0, s"""${m.size} map size is not equal 0"""")
         val res = f.map(_ ())
-        assert(m.size == r, s"""${m.size} map size is not equal $r"""")
+        //        assert(m.size == r, s"""${m.size} map size is not equal $r"""")
         res
       }
 
@@ -62,9 +62,9 @@ object MapAddBenchmark extends MapBenchmark {
         case (_, m, _) => m.foreach(_.clear())
       } in {
         case (r, m, f) =>
-          assert(m.map(_.size).sum == 0, s"""${m.map(_.size).sum} map size is not equal 0"""")
+          //          assert(m.map(_.size).sum == 0, s"""${m.map(_.size).sum} map size is not equal 0"""")
           val res = f.flatMap(_.map(_ ()))
-          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} map size is not equal $r"""")
+          //          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} map size is not equal $r"""")
           res
 
       }
