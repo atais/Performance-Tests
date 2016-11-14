@@ -63,7 +63,7 @@ object MapAddBenchmark extends MapBenchmark {
       } in {
         case (r, m, f) =>
           //          assert(m.map(_.size).sum == 0, s"""${m.map(_.size).sum} map size is not equal 0"""")
-          val res = f.flatMap(_.map(_ ()))
+          val res = f.map(_.map(_ ()))
           //          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} map size is not equal $r"""")
           res
 

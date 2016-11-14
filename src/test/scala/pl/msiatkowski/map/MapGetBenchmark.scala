@@ -67,8 +67,8 @@ object MapGetBenchmark extends MapBenchmark {
       }) curve differentHashMapS in {
         case (r, m, t) =>
           //          assert(m.map(_.size).sum == r, s"""${m.map(_.size).sum} map size is not equal $r"""")
-          val res = t.flatMap(_.map(_ ()))
-          //          assert(res.size == r, s"""${res.size} result size is not equal $r"""")
+          val res = t.map(_.map(_ ()))
+          //          assert(res.map(_.size).sum == r, s"""${res.size} result size is not equal $r"""")
           res
       }
     }
