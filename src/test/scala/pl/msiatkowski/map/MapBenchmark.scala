@@ -1,9 +1,6 @@
 package pl.msiatkowski.map
 
 import org.scalameter.api._
-import org.scalameter.picklers.noPickler._
-
-import scala.collection.mutable.ArrayBuffer
 
 /**
   * Created by msiatkowski on 21.07.16.
