@@ -1,10 +1,20 @@
 package pl.msiatkowski
 
+import org.scalameter.Reporter.Composite
 import org.scalameter.api._
 
 object RangeBenchmark extends Bench.ForkedTime {
 
-  override val reporter = ChartReporter[Double](ChartFactory.XYLine())
+  def tester: RegressionReporter.Tester =
+    RegressionReporter.Tester.OverlapIntervals()
+
+  def historian: RegressionReporter.Historian =
+    RegressionReporter.Historian.ExponentialBackoff()
+
+  override def reporter: Reporter[Double] = Composite(
+    LoggingReporter(),
+    RegressionReporter(tester, historian)
+  )
 
   val size = 100000
   val sizes = Gen.range("size")(size, 10 * size, size)

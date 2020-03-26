@@ -2,6 +2,7 @@ package pl.msiatkowski.set
 
 import java.util
 
+import org.scalameter.Reporter.Composite
 import org.scalameter.api._
 
 import scala.util.Random
@@ -11,7 +12,16 @@ import scala.util.Random
   */
 object SetIntBenchmark extends Bench.ForkedTime {
 
-  override val reporter = ChartReporter[Double](ChartFactory.XYLine())
+  def tester: RegressionReporter.Tester =
+    RegressionReporter.Tester.OverlapIntervals()
+
+  def historian: RegressionReporter.Historian =
+    RegressionReporter.Historian.ExponentialBackoff()
+
+  override def reporter: Reporter[Double] = Composite(
+    LoggingReporter(),
+    RegressionReporter(tester, historian)
+  )
 
   val opts = Context(
     exec.benchRuns -> 100

@@ -3,6 +3,7 @@ package pl.msiatkowski
 import java.util
 
 import org.apache.commons.lang3.RandomStringUtils
+import org.scalameter.Reporter.Composite
 import org.scalameter.api._
 
 /**
@@ -12,7 +13,16 @@ object HashSetArrayListMemBenchmark extends Bench.ForkedTime {
 
   override def measurer = new Executor.Measurer.MemoryFootprint
 
-  override val reporter = ChartReporter[Double](ChartFactory.XYLine())
+  def tester: RegressionReporter.Tester =
+    RegressionReporter.Tester.OverlapIntervals()
+
+  def historian: RegressionReporter.Historian =
+    RegressionReporter.Historian.ExponentialBackoff()
+
+  override def reporter: Reporter[Double] = Composite(
+    LoggingReporter(),
+    RegressionReporter(tester, historian)
+  )
 
   val opts = Context(
     exec.benchRuns -> 100,

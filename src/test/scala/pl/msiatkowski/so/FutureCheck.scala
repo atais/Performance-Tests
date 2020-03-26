@@ -1,12 +1,13 @@
 package pl.msiatkowski.so
 
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class FutureCheck extends FlatSpec with Matchers {
+class FutureCheck extends AnyFlatSpec with Matchers {
 
   "A simple" should "test" in {
 

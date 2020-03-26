@@ -5,9 +5,10 @@ import java.time.chrono.ChronoLocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class LocalDateCompare extends FlatSpec with Matchers {
+class LocalDateCompare extends AnyFlatSpec with Matchers {
 
   "A simple" should "test" in {
 
