@@ -1,4 +1,4 @@
-package pl.msiatkowski.map
+package com.github.atais.map
 
 import java.util
 import java.util.concurrent.ConcurrentHashMap

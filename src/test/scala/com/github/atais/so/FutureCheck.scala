@@ -1,4 +1,4 @@
-package pl.msiatkowski.so
+package com.github.atais.so
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

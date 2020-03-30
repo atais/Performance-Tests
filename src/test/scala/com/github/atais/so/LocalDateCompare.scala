@@ -1,4 +1,4 @@
-package pl.msiatkowski.so
+package com.github.atais.so
 
 import java.time.LocalDate
 import java.time.chrono.ChronoLocalDate

@@ -1,4 +1,4 @@
-package pl.msiatkowski
+package com.github.atais
 
 import org.scalameter.Reporter.Composite
 import org.scalameter.api._

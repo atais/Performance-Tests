@@ -1,4 +1,4 @@
-package pl.msiatkowski.map
+package com.github.atais.map
 
 import org.scalameter.Reporter.Composite
 import org.scalameter.api._
@@ -23,7 +23,7 @@ class MapBenchmark extends Bench.ForkedTime {
     exec.benchRuns -> 1000
   )
 
-  val size = 100000
+  val size = 1000
 
   def sizes: Gen[Int] = Gen.range("size")(size, 10 * size, size)
 
