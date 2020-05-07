@@ -21,12 +21,12 @@ object PriorityQueueVsSortOnceBenchmark extends Bench.ForkedTime {
   )
 
   val opts = Context(
-    exec.benchRuns -> 10000
+    exec.benchRuns -> 100000
   )
 
   val topElems = 5
   val size = 2
-  val elems = Gen.range("size")(size, 10 * size, 2 * size)
+  val elems = Gen.range("size")(size, 10   * size, 4 * size)
     .map(i => (0 until i).map(v => Container(RandomStringUtils.randomAlphabetic(5), i)))
 
   performance of "different approaches" config opts in {
